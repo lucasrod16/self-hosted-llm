@@ -1,2 +1,3 @@
-# lexicon
-A chatbot using a large language model (LLM) with Retrieval-Augmented Generation (RAG) architecture to provide context-aware responses.
+# chatbot
+
+This repository contains configuration files to deploy a self-hosted Retrieval-Augmented Generation (RAG) chatbot using [Ollama](https://ollama.com/) and [Open WebUI](https://openwebui.com/).
