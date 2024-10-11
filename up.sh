@@ -6,7 +6,7 @@ URL="http://localhost:11434"
 
 health_check() {
     local retry_limit=5
-    local retry_interval=3
+    local retry_interval=1
     until curl -f -s "$URL" > /dev/null; do
         if (( retry_limit-- <= 0 )); then
             echo "Health check failed after $retry_limit attempts."
