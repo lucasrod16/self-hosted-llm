@@ -1,6 +1,6 @@
 .PHONY: up
 up:
-	docker compose up -d
+	./up.sh
 
 .PHONY: down
 down:
