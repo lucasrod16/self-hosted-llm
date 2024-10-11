@@ -12,7 +12,7 @@ health_check() {
             echo "Health check failed after $retry_limit attempts."
             exit 1
         fi
-        echo "Health check failed, retrying in $retry_interval seconds..."
+        echo "Health check failed, retrying in $retry_interval second..."
         sleep "$retry_interval"
     done
     echo "Health check passed!"
