@@ -2,7 +2,15 @@ name: chatbot
 
 volumes:
   ollama:
+    driver_opts:
+      type: none
+      device: /mnt/data/ollama
+      o: bind
   open-webui:
+    driver_opts:
+      type: none
+      device: /mnt/data/open-webui
+      o: bind
 
 services:
   ollama:
