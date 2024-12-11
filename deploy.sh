@@ -13,6 +13,7 @@ INSTANCE_IP=$(terraform output -raw instance_ip)
 
 echo "Waiting for EC2 instance to be ready..."
 aws ec2 wait instance-status-ok --instance-ids "$INSTANCE_ID"
+
 ssh-keyscan -H "$INSTANCE_IP" >> ~/.ssh/known_hosts
 scp -p ./up.sh docker-compose.yml ubuntu@"$INSTANCE_IP":~/
-ssh ubuntu@"$INSTANCE_IP" '$HOME/up.sh'
+ssh ubuntu@"$INSTANCE_IP" 'nvidia-smi; $HOME/up.sh'

@@ -62,12 +62,27 @@ resource "aws_key_pair" "ssh_key" {
 }
 
 resource "aws_instance" "chatbot_server" {
-  ami               = "ami-036841078a4b68e14"
-  instance_type     = "m5a.4xlarge"
+  ami = "ami-036841078a4b68e14"
+
+  # https://github.com/ollama/ollama/blob/main/docs/gpu.md
+  # https://docs.aws.amazon.com/dlami/latest/devguide/gpu.html
+  # https://aws.amazon.com/ec2/spot/pricing/
+  # https://medium.com/@bijit211987/top-nvidia-gpus-for-llm-inference-8a5316184a10
+  # 
+  # https://aws.amazon.com/ec2/instance-types/g6e/
+  # https://www.nvidia.com/en-us/data-center/l40s/
+  # G6e - NVIDIA L40S Tensor Core GPU
+  # ~ $0.63 - $2.21 (g6e.xlarge - g6e.16xlarge 1 GPU)
+  instance_type = "g6e.xlarge"
+
   key_name          = aws_key_pair.ssh_key.key_name
   security_groups   = [aws_security_group.chatbot_sg.name]
   user_data         = file("./user_data.sh")
   availability_zone = "us-east-2a"
+
+  instance_market_options {
+    market_type = "spot"
+  }
 
   root_block_device {
     volume_size = 500
@@ -87,7 +102,7 @@ resource "aws_volume_attachment" "chatbot_volume_attachment" {
   # Amazon EBS volumes are exposed as NVMe block devices on Amazon EC2 instances built on the AWS Nitro System.
   # 
   # tldr; device_name is renamed using NVMe device names (/dev/nvme[0-26]n1)
-  # because m5a instance types are built on the Nitro v2 system.
+  # because G6e instance types are built on the Nitro v2 system.
   # 
   # https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-nitro-instances.html
   device_name = "/dev/sdh"

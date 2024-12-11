@@ -59,6 +59,22 @@ install_docker() {
     apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 }
 
+# https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html#pre-installation-actions
+# https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html#ubuntu
+install_nvidia_driver() {
+    # install kernel headers and development packages for the currently running kernel
+    apt-get install -y "linux-headers-$(uname -r)"
+
+    # install the cuda-keyring package
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+    dpkg -i cuda-keyring_1.1-1_all.deb
+
+    apt-get update -y
+
+    # install open kernel modules
+    apt-get install -y nvidia-open
+}
+
 mount_ebs_volume
 install_docker
-apt-get update -y && apt-get upgrade -y
+install_nvidia_driver
