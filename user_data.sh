@@ -8,36 +8,37 @@ set -euox pipefail
 mount_ebs_volume() {
     local device_name="/dev/nvme1n1"
     local mount_point="/mnt/data"
-    local ollama_path="${mount_point}/ollama"
-    local open_webui_path="${mount_point}/open-webui"
 
-    echo "Creating $mount_point directory..."
-    mkdir -p "$mount_point"
+    if [ ! -b "$device_name" ]; then
+        echo "Error: Device $device_name does not exist. Ensure the EBS volume is attached."
+        exit 1
+    fi
 
-    # Check if the device is already formatted
-    if ! blkid | grep -q "$device_name"; then
+    if file -s "$device_name" | grep "filesystem"; then
+        echo "Device $device_name is already formatted."
+    else
         echo "Formatting $device_name as ext4..."
         mkfs.ext4 "$device_name"
-    else
-        echo "$device_name is already formatted."
     fi
 
-    # Check if the device is already mounted
-    if ! mount | grep -q "$device_name"; then
-        echo "Mounting $device_name to $mount_point..."
-        mount "$device_name" "$mount_point"
-        
-        # Add the device to /etc/fstab to ensure it mounts on boot
-        echo "$device_name $mount_point ext4 defaults,nofail 0 2" >> /etc/fstab
-    else
-        echo "$device_name is already mounted."
+    if [ ! -d "$mount_point" ]; then
+        echo "Creating mount point $mount_point..."
+        mkdir -p $mount_point
     fi
 
-    echo "Creating $ollama_path directory..."
-    mkdir -p "$ollama_path"
+    echo "Mounting $device_name to $mount_point..."
+    mount $device_name $mount_point
 
-    echo "Creating $open_webui_path directory..."
-    mkdir -p "$open_webui_path"
+    if mountpoint -q $mount_point; then
+        echo "EBS volume successfully mounted at $mount_point."
+    else
+        echo "Error: Failed to mount $device_name."
+        exit 1
+    fi
+
+    echo "Creating directories within $mount_point..."
+    mkdir -p "${mount_point}/ollama"
+    mkdir -p "${mount_point}/open-webui"
 }
 
 # https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
