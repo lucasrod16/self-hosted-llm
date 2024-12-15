@@ -83,11 +83,6 @@ resource "aws_instance" "chatbot_server" {
   instance_market_options {
     market_type = "spot"
   }
-
-  root_block_device {
-    volume_size = 500
-    volume_type = "gp3"
-  }
 }
 
 resource "aws_volume_attachment" "chatbot_volume_attachment" {

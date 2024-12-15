@@ -1,17 +1,5 @@
 name: chatbot
 
-volumes:
-  ollama:
-    driver_opts:
-      type: none
-      device: /mnt/data/ollama
-      o: bind
-  open-webui:
-    driver_opts:
-      type: none
-      device: /mnt/data/open-webui
-      o: bind
-
 services:
   ollama:
     container_name: ollama
@@ -19,7 +7,7 @@ services:
     ports:
       - "11434:11434"
     volumes:
-      - ollama:/root/.ollama
+      - /mnt/data/ollama:/root/.ollama
     deploy:
       resources:
         reservations:
@@ -34,7 +22,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - open-webui:/app/backend/data
+      - /mnt/data/open-webui:/app/backend/data
     environment:
       - OLLAMA_BASE_URL=http://ollama:11434
       - WEBUI_AUTH=false
