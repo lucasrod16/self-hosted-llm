@@ -61,8 +61,17 @@ resource "aws_key_pair" "ssh_key" {
   public_key = file("~/.ssh/id_rsa.pub")
 }
 
+data "aws_ami" "latest_chatbot_ami" {
+  most_recent = true
+  owners      = ["self"]
+  filter {
+    name   = "name"
+    values = ["chatbot-ubuntu-2404-*"]
+  }
+}
+
 resource "aws_instance" "chatbot_server" {
-  ami = "ami-036841078a4b68e14"
+  ami = data.aws_ami.latest_chatbot_ami.id
 
   # https://github.com/ollama/ollama/blob/main/docs/gpu.md
   # https://docs.aws.amazon.com/dlami/latest/devguide/gpu.html
@@ -75,9 +84,11 @@ resource "aws_instance" "chatbot_server" {
   # ~ $0.6354 (g6e.xlarge 1 GPU)
   instance_type = "g6e.xlarge"
 
-  key_name          = aws_key_pair.ssh_key.key_name
-  security_groups   = [aws_security_group.chatbot_sg.name]
-  user_data         = file("./user_data.sh")
+  key_name        = aws_key_pair.ssh_key.key_name
+  security_groups = [aws_security_group.chatbot_sg.name]
+  user_data       = file("./user_data.sh")
+
+  # must be in the same AZ as the EBS volume
   availability_zone = "us-east-2a"
 
   instance_market_options {
