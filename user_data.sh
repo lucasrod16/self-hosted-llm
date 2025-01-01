@@ -13,6 +13,7 @@ mount_ebs_volume() {
     local interval=3
     local start_time
     start_time=$(date +%s)
+
     while ! lsblk --nvme | grep -q "$volume_id"; do
         current_time=$(date +%s)
         elapsed=$((current_time - start_time))
@@ -74,6 +75,12 @@ mount_ebs_volume() {
     echo "Creating directories within $mount_point..."
     mkdir -p "${mount_point}/ollama"
     mkdir -p "${mount_point}/open-webui"
+
+    # add the device to /etc/fstab for auto-mounting on startup.
+    local device_uuid
+    device_uuid=$(blkid -s UUID -o value "$device_name")
+    echo "$device_uuid $mount_point ext4 defaults 0 1" | tee -a /etc/fstab
+    echo "$device_uuid $docker_data_directory ext4 0 1" | tee -a /etc/fstab
 }
 
 mount_ebs_volume

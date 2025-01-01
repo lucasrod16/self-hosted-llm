@@ -9,7 +9,7 @@ terraform {
   }
   backend "s3" {
     bucket         = "lucasrod16-tfstate"
-    key            = "chatbot/tfstate"
+    key            = "self-hosted-llm/tfstate"
     region         = "us-east-2"
     dynamodb_table = "lucasrod16-tfstate"
   }
@@ -23,9 +23,9 @@ data "http" "my_ip" {
   url = "https://checkip.amazonaws.com"
 }
 
-resource "aws_security_group" "chatbot_sg" {
-  name        = "chatbot_security_group"
-  description = "Security group to allow access to chatbot"
+resource "aws_security_group" "llm_sg" {
+  name        = "llm_security_group"
+  description = "Security group to allow access to self-hosted LLM"
 
   ingress {
     from_port   = 22
@@ -57,21 +57,21 @@ resource "aws_security_group" "chatbot_sg" {
 }
 
 resource "aws_key_pair" "ssh_key" {
-  key_name   = "chatbot-key-pair"
+  key_name   = "llm-key-pair"
   public_key = file("~/.ssh/id_rsa.pub")
 }
 
-data "aws_ami" "latest_chatbot_ami" {
+data "aws_ami" "latest_llm_ami" {
   most_recent = true
   owners      = ["self"]
   filter {
     name   = "name"
-    values = ["chatbot-ubuntu-2404-*"]
+    values = ["self-hosted-llm-ubuntu-2404-*"]
   }
 }
 
-resource "aws_instance" "chatbot_server" {
-  ami = data.aws_ami.latest_chatbot_ami.id
+resource "aws_instance" "llm_server" {
+  ami = data.aws_ami.latest_llm_ami.id
 
   # https://github.com/ollama/ollama/blob/main/docs/gpu.md
   # https://docs.aws.amazon.com/dlami/latest/devguide/gpu.html
@@ -85,7 +85,7 @@ resource "aws_instance" "chatbot_server" {
   instance_type = "g6e.xlarge"
 
   key_name        = aws_key_pair.ssh_key.key_name
-  security_groups = [aws_security_group.chatbot_sg.name]
+  security_groups = [aws_security_group.llm_sg.name]
   user_data       = file("./user_data.sh")
 
   # must be in the same AZ as the EBS volume
@@ -96,7 +96,7 @@ resource "aws_instance" "chatbot_server" {
   }
 }
 
-resource "aws_volume_attachment" "chatbot_volume_attachment" {
+resource "aws_volume_attachment" "llm_volume_attachment" {
   # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/device_naming.html
   # The device names that you specify for NVMe EBS volumes in a block device mapping
   # are renamed using NVMe device names (/dev/nvme[0-26]n1).
@@ -112,14 +112,14 @@ resource "aws_volume_attachment" "chatbot_volume_attachment" {
   # 
   # https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-nitro-instances.html
   device_name = "/dev/sdh"
-  instance_id = aws_instance.chatbot_server.id
+  instance_id = aws_instance.llm_server.id
   volume_id   = "vol-0f2153615108429a8"
 }
 
 output "instance_ip" {
-  value = aws_instance.chatbot_server.public_ip
+  value = aws_instance.llm_server.public_ip
 }
 
 output "instance_id" {
-  value = aws_instance.chatbot_server.id
+  value = aws_instance.llm_server.id
 }

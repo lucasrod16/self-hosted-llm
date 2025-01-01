@@ -1,4 +1,4 @@
-name: chatbot
+name: self-hosted-llm
 
 services:
   ollama:

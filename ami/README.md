@@ -1,6 +1,6 @@
-# Chatbot Amazon Machine Image (AMI)
+# Amazon Machine Image (AMI)
 
-<https://github.com/lucasrod16/chatbot/issues/1>
+<https://github.com/lucasrod16/self-hosted-llm/issues/1>
 
 ## Build the AMI
 

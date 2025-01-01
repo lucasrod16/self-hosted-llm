@@ -14,7 +14,7 @@ locals {
 source "amazon-ebs" "ubuntu_ami" {
   region        = "us-east-2"
   instance_type = "t2.micro"
-  ami_name      = "chatbot-ubuntu-2404-${local.formatted_timestamp}"
+  ami_name      = "self-hosted-llm-ubuntu-2404-${local.formatted_timestamp}"
   source_ami_filter {
     filters = {
       name                = "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"
