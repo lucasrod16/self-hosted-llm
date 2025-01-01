@@ -2,9 +2,9 @@
 
 set -euo pipefail
 
+terraform init
 terraform fmt
 terraform validate
-terraform init
 terraform plan
 terraform apply --auto-approve
 
