@@ -15,7 +15,7 @@ echo "Waiting for EC2 instance to be ready..."
 aws ec2 wait instance-status-ok --instance-ids "$INSTANCE_ID"
 
 ssh-keyscan -H "$INSTANCE_IP" >> ~/.ssh/known_hosts
-scp -p docker-compose.yml ubuntu@"$INSTANCE_IP":~/
+scp -r docker/ docker-compose.yml ubuntu@"$INSTANCE_IP":~/
 
 ssh ubuntu@"$INSTANCE_IP" << EOF
 #!/usr/bin/env bash
