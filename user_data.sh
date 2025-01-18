@@ -29,7 +29,7 @@ mount_ebs_volume() {
 
 
     local device_name
-    device_name="/dev/$(lsblk --nvme | grep "vol0f2153615108429a8" | awk '{print $1}')"
+    device_name="/dev/$(lsblk --nvme | grep "$volume_id" | awk '{print $1}')"
 
     if file -s "$device_name" | grep "filesystem"; then
         echo "Device $device_name is already formatted."
