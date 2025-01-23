@@ -46,12 +46,9 @@ module "iam_github_oidc_role" {
   policies = {
     EC2        = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
     S3ReadOnly = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+    DynamoDB   = module.iam_policy_tf_state_locking.arn
   }
   tags = local.tags
-}
-
-output "role_arn" {
-  value = module.iam_github_oidc_role.arn
 }
 
 
@@ -72,11 +69,14 @@ data "aws_iam_policy_document" "dynamodb_policy" {
   }
 }
 
-
 module "iam_policy_tf_state_locking" {
   source      = "github.com/terraform-aws-modules/terraform-aws-iam/modules/iam-policy?ref=e803e25ce20a6ebd5579e0896f657fa739f6f03e" # v5.52.2
   name        = "dynamodb-tf-state-locking"
   description = "Policy to give terraform permissions to perform state locking using DynamoDB"
   policy      = data.aws_iam_policy_document.dynamodb_policy.json
   tags        = local.tags
+}
+
+output "role_arn" {
+  value = module.iam_github_oidc_role.arn
 }
