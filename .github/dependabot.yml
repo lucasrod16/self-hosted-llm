@@ -4,3 +4,9 @@ updates:
     directory: "docker"
     schedule:
       interval: "daily"
+  - package-ecosystem: "terraform"
+    directories:
+      - "/"
+      - "github-oidc-infra"
+    schedule:
+      interval: "daily"

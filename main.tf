@@ -111,7 +111,7 @@ resource "aws_volume_attachment" "llm_volume_attachment" {
   # https://docs.aws.amazon.com/ebs/latest/userguide/nvme-ebs-volumes.html
   # Amazon EBS volumes are exposed as NVMe block devices on Amazon EC2 instances built on the AWS Nitro System.
   # 
-  # tldr; device_name is renamed using NVMe device names (/dev/nvme[0-26]n1)
+  # tl;dr device_name is renamed using NVMe device names (/dev/nvme[0-26]n1)
   # because G6e instance types are built on the Nitro v2 system.
   # 
   # https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-nitro-instances.html
