@@ -53,3 +53,30 @@ module "iam_github_oidc_role" {
 output "role_arn" {
   value = module.iam_github_oidc_role.arn
 }
+
+
+#########################################
+# IAM policy
+#########################################
+
+data "aws_iam_policy_document" "dynamodb_policy" {
+  statement {
+    sid = "AllowDynamoDBAccess"
+    actions = [
+      "dynamodb:DescribeTable",
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem"
+    ]
+    resources = ["arn:aws:dynamodb:*:*:table/lucasrod16-tfstate"]
+  }
+}
+
+
+module "iam_policy_tf_state_locking" {
+  source      = "github.com/terraform-aws-modules/terraform-aws-iam/modules/iam-policy?ref=e803e25ce20a6ebd5579e0896f657fa739f6f03e" # v5.52.2
+  name        = "dynamodb-tf-state-locking"
+  description = "Policy to give terraform permissions to perform state locking using DynamoDB"
+  policy      = data.aws_iam_policy_document.dynamodb_policy.json
+  tags        = local.tags
+}
