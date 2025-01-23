@@ -19,7 +19,12 @@ jobs:
           role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
 
       - name: Create SSH keypair
-        run: ssh-keygen -t rsa -b 2048 -q -N ""
+        run: ssh-keygen -t rsa -b 2048 -q -N "" -f ~/.ssh/id_rsa
+
+      - name: Install terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        with:
+          terraform_wrapper: false
 
       - name: Deploy LLM
         run: ./deploy.sh
