@@ -4,3 +4,7 @@ updates:
     directory: "docker"
     schedule:
       interval: "daily"
+  - package-ecosystem: "terraform"
+    directory: "/"
+    schedule:
+      interval: "daily"
