@@ -89,7 +89,9 @@ data "aws_iam_policy_document" "s3_policy" {
     actions = ["s3:GetObject", "s3:PutObject"]
     resources = [
       "arn:aws:s3:::lucasrod16-tfstate/github-oidc/tfstate",
-      "arn:aws:s3:::lucasrod16-tfstate/github-oidc/tfstate.tflock"
+      "arn:aws:s3:::lucasrod16-tfstate/github-oidc/tfstate.tflock",
+      "arn:aws:s3:::lucasrod16-tfstate/self-hosted-llm/tfstate",
+      "arn:aws:s3:::lucasrod16-tfstate/self-hosted-llm/tfstate.tflock"
     ]
   }
 }
