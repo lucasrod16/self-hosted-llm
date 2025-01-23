@@ -45,7 +45,7 @@ module "iam_github_oidc_role" {
   ]
   policies = {
     EC2      = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
-    S3       = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+    S3       = module.iam_policy_tf_state.arn
     DynamoDB = module.iam_policy_tf_state_locking.arn
   }
   tags = local.tags
