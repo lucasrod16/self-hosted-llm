@@ -44,9 +44,9 @@ module "iam_github_oidc_role" {
     "repo:lucasrod16/self-hosted-llm:*",
   ]
   policies = {
-    EC2        = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
-    S3ReadOnly = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
-    DynamoDB   = module.iam_policy_tf_state_locking.arn
+    EC2      = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+    S3       = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+    DynamoDB = module.iam_policy_tf_state_locking.arn
   }
   tags = local.tags
 }
@@ -74,6 +74,31 @@ module "iam_policy_tf_state_locking" {
   name        = "dynamodb-tf-state-locking"
   description = "Policy to give terraform permissions to perform state locking using DynamoDB"
   policy      = data.aws_iam_policy_document.dynamodb_policy.json
+  tags        = local.tags
+}
+
+data "aws_iam_policy_document" "s3_policy" {
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:ListBucket"]
+    resources = ["arn:aws:s3:::lucasrod16-tfstate"]
+  }
+
+  statement {
+    effect  = "Allow"
+    actions = ["s3:GetObject", "s3:PutObject"]
+    resources = [
+      "arn:aws:s3:::lucasrod16-tfstate/github-oidc/tfstate",
+      "arn:aws:s3:::lucasrod16-tfstate/github-oidc/tfstate.tflock"
+    ]
+  }
+}
+
+module "iam_policy_tf_state" {
+  source      = "github.com/terraform-aws-modules/terraform-aws-iam/modules/iam-policy?ref=e803e25ce20a6ebd5579e0896f657fa739f6f03e" # v5.52.2
+  name        = "s3-tf-state"
+  description = "Policy to give terraform permissions to store state in S3"
+  policy      = data.aws_iam_policy_document.s3_policy.json
   tags        = local.tags
 }
 
