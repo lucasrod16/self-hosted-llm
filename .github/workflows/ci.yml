@@ -1,5 +1,4 @@
 on:
-  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -24,3 +23,7 @@ jobs:
 
       - name: Deploy LLM
         run: ./deploy.sh
+
+      - name: Teardown
+        if: always()
+        run: terraform destroy --auto-approve
