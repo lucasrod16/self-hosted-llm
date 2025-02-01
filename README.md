@@ -2,7 +2,10 @@
 
 Deploy a self-hosted Large Language Model (LLM) using [Ollama](https://ollama.com/) and [Open WebUI](https://openwebui.com/).
 
-Currently using the [Llama 3.3 70B](https://www.llama.com/docs/model-cards-and-prompt-formats/llama3_3/) model.
+Currently using the following models:
+
+- [Llama 3.3 70b](https://ollama.com/library/llama3.3)
+- [DeepSeek-R1 70b](https://ollama.com/library/deepseek-r1:70b)
 
 ## Architecture
 

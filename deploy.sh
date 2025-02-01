@@ -27,13 +27,11 @@ cloud-init status --wait --long
 sudo docker compose down
 sudo docker compose up -d
 
-# download model
-echo "Downloading model...this could take a few minutes..."
-curl -f "http://localhost:11434/api/pull" -d '{"name": "llama3.3"}'
+echo "Downloading llama 3.3 model...this could take a few minutes..."
+curl -fsSL "http://localhost:11434/api/pull" -d '{"name": "llama3.3"}'
 
-# preload model and leave it in memory 
-echo "Preloading model...this could take a few minutes..."
-curl -f "http://localhost:11434/api/generate" -d '{"model": "llama3.3", "keep_alive": -1}'
+echo "Downloading deepseek-r1:70b model...this could take a few minutes..."
+curl -fsSL "http://localhost:11434/api/pull" -d '{"name": "deepseek-r1:70b"}'
 
 nvidia-smi
 EOF

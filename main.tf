@@ -91,6 +91,10 @@ resource "aws_instance" "llm_server" {
   # must be in the same AZ as the EBS volume
   availability_zone = "us-east-2a"
 
+  root_block_device {
+    volume_size = 100
+  }
+
   instance_market_options {
     market_type = "spot"
     spot_options {
