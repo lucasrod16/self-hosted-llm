@@ -75,14 +75,23 @@ resource "aws_instance" "llm_server" {
 
   # https://github.com/ollama/ollama/blob/main/docs/gpu.md
   # https://docs.aws.amazon.com/dlami/latest/devguide/gpu.html
-  # https://aws.amazon.com/ec2/spot/pricing/
+
   # https://medium.com/@bijit211987/top-nvidia-gpus-for-llm-inference-8a5316184a10
-  # 
+
+  # https://aws.amazon.com/ec2/pricing/on-demand/
+  # https://aws.amazon.com/ec2/spot/pricing/
   # https://aws.amazon.com/ec2/instance-types/g6e/
+
+
   # https://www.nvidia.com/en-us/data-center/l40s/
   # G6e - NVIDIA L40S Tensor Core GPU
-  # ~ $0.6354 (g6e.xlarge 1 GPU)
-  instance_type = "g6e.xlarge"
+  # g6e.12xlarge instance specs:
+  #   - 4 GPUs
+  #   - 192 GB VRAM
+  #   - 48 vCPUs
+  #   - 384 GB RAM
+  #   - $10.49264 on-demand hourly rate
+  instance_type = "g6e.12xlarge"
 
   key_name        = aws_key_pair.ssh_key.key_name
   security_groups = [aws_security_group.llm_sg.name]
@@ -95,13 +104,9 @@ resource "aws_instance" "llm_server" {
     volume_size = 100
   }
 
-  instance_market_options {
-    market_type = "spot"
-    spot_options {
-      instance_interruption_behavior = "stop"
-      spot_instance_type             = "persistent"
-    }
-  }
+  # instance_market_options {
+  #   market_type = "spot"
+  # }
 }
 
 resource "aws_volume_attachment" "llm_volume_attachment" {
