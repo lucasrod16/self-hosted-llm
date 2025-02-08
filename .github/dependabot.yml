@@ -10,3 +10,7 @@ updates:
       - "github-oidc-infra"
     schedule:
       interval: "daily"
+    groups:
+      terraform-dependencies:
+        patterns:
+          - "*"
