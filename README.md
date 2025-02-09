@@ -9,7 +9,7 @@ Currently using the following models:
 
 ## Architecture
 
-The LLM is deployed on an AWS EC2 instance with a pre-configured Amazon Machine Image (AMI) that includes Docker, the NVIDIA driver, and the NVIDIA Container Toolkit. The EC2 instance is equipped with a single [NVIDIA L40S Tensor Core GPU](https://www.nvidia.com/en-us/data-center/l40s/).
+The LLM is deployed on an AWS EC2 instance with a pre-configured Amazon Machine Image (AMI) that includes Docker, the NVIDIA driver, and the NVIDIA Container Toolkit. The EC2 instance is equipped with four [NVIDIA L40S Tensor Core GPUs](https://www.nvidia.com/en-us/data-center/l40s/).
 
 Docker Compose is used to manage two containers:
 
