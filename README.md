@@ -9,6 +9,23 @@ Currently using the following models:
 
 ## Architecture
 
+```mermaid
+architecture-beta
+    group aws(logos:aws)[AWS Cloud]
+    service ec2(logos:aws-ec2)[Ubuntu EC2 Instance] in aws
+    service ebs(disk)[Block storage volume for data persistence] in aws
+    service nvidia_gpu(logos:nvidia)[GPU Acceleration] in aws
+
+    group containers(logos:docker)[Docker Compose]
+    service ollama(logos:docker)[Ollama] in containers
+    service webui(logos:docker)[Open WebUI] in containers
+
+    ec2:L -- R:ollama
+    ec2:L -- R:webui
+    ec2:L -- R:ebs
+    ec2:L -- R:nvidia_gpu
+```
+
 The LLM is deployed on an AWS EC2 instance with a pre-configured Amazon Machine Image (AMI) that includes Docker, the NVIDIA driver, and the NVIDIA Container Toolkit. The EC2 instance is equipped with four [NVIDIA L40S Tensor Core GPUs](https://www.nvidia.com/en-us/data-center/l40s/).
 
 Docker Compose is used to manage two containers:
