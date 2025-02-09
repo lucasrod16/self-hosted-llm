@@ -3,6 +3,10 @@ name: Build AMI
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build-ami:
     runs-on: ubuntu-latest
