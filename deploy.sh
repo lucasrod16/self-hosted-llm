@@ -24,7 +24,8 @@ set -euo pipefail
 
 cloud-init status --wait --long
 
-sudo docker compose restart
+sudo docker compose down
+sudo docker compose up -d
 
 echo "Downloading llama 3.3 model...this could take a few minutes..."
 curl -fsSL "http://localhost:11434/api/pull" -d '{"name": "llama3.3"}'

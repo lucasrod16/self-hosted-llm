@@ -82,7 +82,6 @@ resource "aws_instance" "llm_server" {
   # https://aws.amazon.com/ec2/spot/pricing/
   # https://aws.amazon.com/ec2/instance-types/g6e/
 
-
   # https://www.nvidia.com/en-us/data-center/l40s/
   # G6e - NVIDIA L40S Tensor Core GPU
   # g6e.12xlarge instance specs:

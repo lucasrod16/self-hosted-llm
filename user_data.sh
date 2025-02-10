@@ -83,5 +83,28 @@ mount_ebs_volume() {
     echo "$device_uuid $docker_data_directory ext4 0 1" | tee -a /etc/fstab
 }
 
+# Disable systemd cgroup management in docker.
+# 
+# Fixes the following error:
+# 
+# cuda driver library failed to get device context 800time=2025-02-09T08:41:25.591Z level=WARN source=gpu.go:449 msg="error looking up nvidia GPU memory"
+# 
+# Context for this workaround: https://github.com/NVIDIA/gpu-operator/issues/485
+# 
+# Also see:
+# - https://github.com/NVIDIA/nvidia-container-toolkit/issues/538#issuecomment-2219617957
+# - https://forums.developer.nvidia.com/t/nvida-container-toolkit-failed-to-initialize-nvml-unknown-error/286219/3
+disable_systemd_cgroup_management_in_docker() {
+    jq '.["exec-opts"] |= (
+        (select(type == "array") // []) + ["native.cgroupdriver=cgroupfs"]
+    )' /etc/docker/daemon.json | tee /etc/docker/daemon.json.tmp > /dev/null
+
+    mv /etc/docker/daemon.json.tmp /etc/docker/daemon.json
+
+    systemctl restart docker
+    systemctl daemon-reload
+}
+
+
 mount_ebs_volume
-systemctl restart docker
+disable_systemd_cgroup_management_in_docker
